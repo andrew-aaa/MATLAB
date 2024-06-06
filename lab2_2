@@ -1,0 +1,24 @@
+x = 37.1;
+y = 9.87;
+z = 6.0521;
+del_x = 0.1;
+del_y = 0.05;
+del_z = 0.02;
+
+syms x y z;
+u = (x.^2 * y.^2) / (z.^4);
+u1 = diff(u, x);
+u2 = diff(u, y);
+u3 = diff(u, z);
+
+del_u = 2*(del_x/x) + 2*(del_y/y) - 4*(del_z/z);
+del_u = subs(del_u, [x,y,z], [37.1,9.87,6.0521]);
+syg_u = abs(del_x * u1) + abs(del_y * u2) + abs(del_z * u3);
+syg_u = subs(syg_u, [x,y,z], [37.1,9.87,6.0521]);
+
+disp('u(x,y,z) = ')
+disp(double(subs(u, [x,y,z], [37.1,9.87,6.0521])));
+disp('Относительная погрешность:');
+disp(double(del_u));
+disp('Абсолютная погрешность:');
+disp(double(syg_u));
