@@ -1,0 +1,109 @@
+a = -10;
+b = 10;
+figure;
+xx = a:2:b;
+yy = cos(xx) + xx.^2;
+plot(xx, yy);
+title('Графики функции');
+xlabel('x');
+ylabel('y');
+hold off;
+
+% Аналитический способ
+syms x;
+f = sym('cos(x) + x^2');
+int_a = int(f, x);
+disp('-----------------Интеграл от y = cos(x) + x^2--------------------------');
+disp('Аналитический способ');
+disp(int_a);
+disp('Значение на интервале [-10; 10]');
+int  = double(subs(int_a, b)) - double(subs(int_a, a));
+disp(int);
+
+% Метод трапеций
+disp(' ');
+disp('Метод трапеций');
+eps = 10.^-2;
+df2 = diff(f, x, 2);
+for i=1:10
+    df_2(i) = abs(double(subs(df2, xx(i))));
+end;
+M2 = max(df_2);
+disp('M2: ');
+disp(M2);
+h = sqrt((12*eps) / ((b-a)*M2));
+disp('Шаг h: ');
+disp(h);
+
+h = 0.04;
+f = @(x) cos(x) + x^2;
+x = a:h:b;
+tr = 0;
+for j=2:(length(x)-1)
+    tr = tr + f(x(j));
+end;
+int_f = h * (0.5*f(x(1)) + tr + 0.5*f(x(end))); 
+disp('Значения интеграла при шаге h равном 0.04:');
+disp(int_f);
+disp('Погрешность:')
+disp(abs(int - int_f));
+
+
+% Метод Симпсона
+syms x;
+f = sym('cos(x) + x^2');
+disp(' ');
+disp('Метод Симпсона');
+eps = 10.^-2;
+df4 = diff(f, x, 4);
+for i=1:10
+    df_4(i) = abs(double(subs(df2, xx(i))));
+end;
+M4 = max(df_2);
+disp('M4: ');
+disp(M4);
+h = (((180*eps) / ((b-a)*M4))).^0.25;
+disp('Шаг h: ');
+disp(h);
+
+h = 0.04;
+f = @(x) cos(x) + x^2;
+x = a:h:b;
+si = 0;
+for j=2:(length(x)-1)
+    si = si + f(x(j));
+end;
+int_f2 = (h/3)*(f(x(1)) + 4*si + f(x(end))); 
+
+disp('Значения интеграла при шаге h равном 0.04:');
+disp(int_f2);
+disp('Погрешность:')
+disp(abs(int - int_f2));
+
+% Стандартные функции MATLAB
+disp(' ');
+disp('Стандартные функции MATLAB');
+x = a:2:b;
+y = cos(x) + x.^2;
+disp('Функция cumtrapz:');
+cum = cumtrapz(x, y);
+disp(cum(end));
+disp('Погрешность:')
+disp(abs(int - cum(end)));
+disp('Функция trapz:');
+trap = trapz(x, y);
+disp(trap);
+disp('Погрешность:')
+disp(abs(int - trap));
+disp('Функция integral:');
+f = @(x) cos(x) + x.^2;
+integ = integral(f, a, b);
+disp(integ);
+disp('Погрешность:')
+disp(abs(int - integ));
+disp('Функция quad:');
+f = @(x) cos(x) + x.^2;
+q = quad(f, a, b);
+disp(q);
+disp('Погрешность:')
+disp(abs(int - q));
