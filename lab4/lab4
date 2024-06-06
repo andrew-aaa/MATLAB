@@ -1,0 +1,133 @@
+A = [3 2 1 5;
+     1 2 3 4;
+     8 9 5 4; 
+     8 4 2 3];
+b = [42; 47; 142; 89];
+eps = 1e-6;
+disp('Матрица коэффициентов A:');
+disp(A);
+disp('Матрица свободных членов b:');
+disp(b);
+disp('Детерминант:');
+disp(det(A));
+disp('Ранг:');
+disp(rank(A));
+disp('Норма:');
+disp(norm(A));
+disp('Число обусловленностей:');
+disp(cond(A));
+
+% Приведение матрицы A к итерационной форме
+A_1 = [8 4 2 3;
+       0 5 3 1;
+       1 2 3 4; 
+       3 2 1 5];
+b_1 = [89; 53; 47; 42];
+for i=1:size(b)
+    for j=1:size(b)
+        C(i,j) = (-A_1(i,j)) / A_1(i,i);
+        if i == j
+            C(i,j) = 0;
+        end
+    end
+    d(i) = b_1(i) / A_1(i, i);
+end
+disp('Матрица C:');
+disp(C);
+disp('Матрица d:');
+disp(d);
+d_1(1, :) = d(:, 1);
+d_1(2, :) = d(:, 2);
+d_1(3, :) = d(:, 3);
+d_1(4, :) = d(:, 4);
+% Метод простых итераций
+disp('--------Метод простых итераций----------');
+disp('Норма матрицы C:');
+disp(norm(C));
+if norm(C) < 1
+    x = d_1;
+    count = 0;
+    n = 1000;
+    for i = 1:n
+        count = count + 1;
+        x_next = C*x + d_1;
+        if norm(x_next - x) < eps
+            break;
+        end
+        x = x_next;
+    end
+    disp('Количество итераций:');
+    disp(count);
+    disp('Решение СЛАУ:');
+    disp(x_next); 
+else
+    disp('Условие сходимости не выполнено');
+end
+
+% Метод Зейделя
+disp(' ');
+disp('--------Метод Зейделя----------');
+tf = issymmetric(A_1);
+k = eig(A_1);
+ispodef = all(k > 0);
+if ispodef == 1
+    L = tril(A_1, -1);
+    D = diag(diag(A_1));
+    U = triu(A_1, 1);
+    x = d_1;
+    count = 0;
+    while true
+        x_next = (D + L) \ (b_1 - U * x);
+        count = count + 1;
+        if norm(x_next - x) < eps
+            break;
+        end
+        x = x_next;
+    end
+    disp('Количество итераций:');
+    disp(count);
+    disp('Решение системы СЛАУ:');
+    disp(x_next);
+else
+    disp('Матрица не является нормальной');
+end
+
+% Метод Якоби
+disp(' ');
+disp('--------Метод Якоби----------');
+flag = 0;
+sum = 0;
+for i=1:size(b)
+    for j=1:size(b)
+        sum = sum + abs(A_1(i,j));
+        if i == j && abs(A_1(i,i)) > sum 
+            flag = flag + 1;
+        end
+    end
+    sum = 0;
+end
+if flag == 4
+    count = 0;
+    while eps > otn_pogr
+        xp = x;
+        for i = 1:n
+            x(i) = (d(i) - C(i,[1:i - 1,i + 1:n]) * xp([1:i - 1,i + 1:n])) / C(i,i);        
+        end
+        eps = max(abs(x - xp)) / max(abs(x0));
+        count = count + 1;
+        x_next(count,:) = [x' eps];
+        if count > iter_max
+            error('Невозможно решить СЛАУ заданным числом итераций')
+        end
+    end
+    disp('Количество итераций:');
+    disp(count);
+    disp('Решение системы СЛАУ:');
+    disp(x_next);
+else
+   disp('Условие сходимости не выполнено'); 
+end
+
+disp(' ');
+disp('Решение СЛАУ через функцию linsolve(A,b):');
+disp(linsolve(A, b));
