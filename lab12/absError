@@ -1,0 +1,10 @@
+function eps = absError(func, f, xs, ys, xk, h, C11)
+    [x1, y1] = func(f, xs, ys, xk, h);
+    str1 = 'Dy=-((x + y) / x)';
+    rezFunc1 = dsolve(str1, 'x');
+    syms x C1;
+    x2 = xs:h:xk;
+    rezFunc1 = subs(rezFunc1, C1, C11);
+    y2 = transpose(subs(rezFunc1, x, x2));
+    eps = abs(y2 - y1);
+end
