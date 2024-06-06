@@ -1,0 +1,35 @@
+eps = 0.001;
+a = 1;
+b = 6;
+% метод хорд
+disp('------Метод хорд-------')
+f = func(a);
+f2 = diffunc2(a);
+if f*f2 > 0
+    x = b;
+    z = a;
+else
+    x = a;
+    z = b;
+end;
+if func(a)*func(b) > 0
+        disp('Метод не сходится');
+else
+    if func(z)*diffunc2(z) > 0
+        disp('Метод быстро сходится');
+    end;
+    fz = func(z);
+    h = ((x-z)*f) / (f-fz);
+    x = x-h;
+    count = 1;
+    while abs(h) >= eps
+        f = func(x);
+        h = ((x-z)*f) / (f-fz);
+        x = x-h;
+        count = count + 1;
+    end;
+    disp('Кол-во итераций:');
+    disp(count);
+    disp('Получившиеся значения x:');
+    disp(x);
+end;
