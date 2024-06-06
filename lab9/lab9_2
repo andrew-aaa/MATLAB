@@ -1,0 +1,120 @@
+clc
+% Вычисление производных с помощью функции diff
+disp('---------Вычисление производных с помощью функции diff-----------');
+syms x
+f = sym('cos(x) + x^2');
+df1 = diff(f, x, 1);
+df2 = diff(f, x, 2);
+disp('Производная 1-го порядка: ');
+disp(df1);
+disp('Значение в точке x = 5:');
+df_1 = double(subs(df1, 5));
+disp(df_1);
+disp('Производная 2-го порядка: ');
+disp(df2);
+disp('Значение в точке x = 5:');
+df_2 = double(subs(df2, 5));
+disp(df_2);
+
+% Вычисление производных по простой и многоточечной формуле
+disp('---------Вычисление производных по простой и многоточечной формуле-----------');
+disp('Функция y = cos(x) + x^2; x0 = 5; шаг h = 0.01')
+disp(' ');
+f = @(x) cos(x) + x^2;
+x0 = 5;
+h = 0.01;
+disp('Производные первого порядка');
+df_simple = (f(x0 + h) - f(x0)) / h;
+df_multi = (-f(x0 + 2*h) + 8*f(x0 + h) - 8*f(x0 - h) + f(x0 - 2*h)) / (12*h);
+disp(['Простая формула: ', num2str(df_simple)]);
+disp(['Многоточечная формула: ', num2str(df_multi)]);
+
+disp(' ');
+disp('Производные второго порядка');
+ddf_simple = (f(x0 + h) - 2*f(x0) + f(x0 - h)) / (h^2);
+ddf_multi = (-f(x0 + 2*h) + 16*f(x0 + h) - 30*f(x0) + 16*f(x0 - h) - f(x0 - 2*h)) / (12*(h^2));
+disp(['Простая формула: ', num2str(ddf_simple)]);
+disp(['Многоточечная формула: ', num2str(ddf_multi)]);
+
+% Оценка точности
+disp(' ');
+disp('---------Оценка точности-----------');
+disp('Для первой производной');
+err_simp_1 = abs(df_1 - df_simple);
+err_mult_1 = abs(df_1 - df_multi);
+disp(['По простой формуле: ', num2str(err_simp_1)]);
+disp(['По многоточечной формуле: ', num2str(err_mult_1)]);
+disp(' ');
+disp('Для второй производной');
+err_simp_2 = abs(df_2 - ddf_simple);
+err_mult_2 = abs(df_2 - ddf_multi);
+disp(['По простой формуле: ', num2str(err_simp_2)]);
+disp(['По многоточечной формуле: ', num2str(err_mult_2)]);
+
+% Графики для точности
+x = 0:1:6;
+for i=1:length(x)
+    dy1(i) = double(subs(df1, x(i)));
+    dy_simple_1(i) = (f(x(i) + h) - f(x(i))) / h;
+    dy_multi_1(i) = (-f(x(i) + 2*h) + 8*f(x(i) + h) - 8*f(x(i) - h) + f(x(i) - 2*h)) / (12*h);
+    err_simply_1(i) = abs(dy1(i) - dy_simple_1(i));
+    err_multi_1(i) = abs(dy1(i) - dy_multi_1(i));
+    
+    dy2(i) = double(subs(df2, x(i)));
+    dy_simple_2(i) = (f(x(i) + h) - 2*f(x(i)) + f(x(i) - h)) / (h^2);
+    dy_multi_2(i) = (-f(x(i) + 2*h) + 16*f(x(i) + h) - 30*f(x(i)) + 16*f(x(i) - h) - f(x(i) - 2*h)) / (12*(h^2));
+    err_simply_2(i) = abs(dy2(i) - dy_simple_2(i));
+    err_multi_2(i) = abs(dy2(i) - dy_multi_2(i));
+end;
+
+figure;
+plot(x, err_simply_1, '-o', x, err_multi_1, '-*');
+title('Графики погрешностей 1-ой производной');
+ylim([0 0.016]);
+xlabel('x');
+ylabel('погрешность');
+legend('простая формула', 'многоточечная формула');
+hold off;
+
+figure;
+plot(x, err_simply_2, '-o', x, err_multi_2, '-*');
+title('Графики погрешностей 2-ой производной');
+ylim([0 9*10.^-6]);
+xlabel('x');
+ylabel('погрешность');
+legend('простая формула', 'многоточечная формула');
+hold off;
+
+% Влияние величины шага на точность вычисления производных
+h = [1 0.1 0.01 0.001];
+for i=1:length(h)
+    dy11(i) = double(subs(df1, x(i)));
+    dy_simple_11(i) = (f(x0 + h(i)) - f(x0)) / h(i);
+    dy_multi_11(i) = (-f(x0 + 2*h(i)) + 8*f(x0 + h(i)) - 8*f(x0 - h(i)) + f(x0 - 2*h(i))) / (12*h(i));
+    err_simply_11(i) = abs(dy11(i) - dy_simple_11(i));
+    err_multi_11(i) = abs(dy11(i) - dy_multi_11(i));
+    
+    dy22(i) = double(subs(df2, x0));
+    dy_simple_22(i) = (f(x0 + h(i)) - 2*f(x0) + f(x0 - h(i))) / (h(i)^2);
+    dy_multi_22(i) = (-f(x0 + 2*h(i)) + 16*f(x0 + h(i)) - 30*f(x0) + 16*f(x0 - h(i)) - f(x0 - 2*h(i))) / (12*(h(i)^2));
+    err_simply_22(i) = abs(dy22(i) - dy_simple_22(i));
+    err_multi_22(i) = abs(dy22(i) - dy_multi_22(i));
+end;
+
+figure;
+plot(h, err_simply_11, '-o', ...
+     h, err_multi_11, '-*');
+title('Влияние величины шага на точность вычисления 1-ой производной');
+xlabel('h');
+ylabel('погрешность');
+legend('простая формула', 'многоточечная формула');
+hold off;
+
+figure;
+plot(h, err_simply_22, '-p', ... 
+     h, err_multi_22, '-h');
+title('Влияние величины шага на точность вычисления 2-ой производной');
+xlabel('h');
+ylabel('погрешность');
+legend('простая формула', 'многоточечная формула');
+hold off;
