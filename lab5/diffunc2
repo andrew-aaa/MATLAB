@@ -1,0 +1,3 @@
+function f = diffunc2(x)
+    f = 4 * cos(2*x);
+end
