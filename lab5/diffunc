@@ -1,0 +1,3 @@
+function f = diffunc(x)
+    f = - 1 + 2 * sin(2*x);
+end
