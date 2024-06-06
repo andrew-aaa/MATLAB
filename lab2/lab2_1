@@ -1,0 +1,23 @@
+x = 2.5378;
+del_x = 0.0001;
+y = 2.536;
+del_y = 0.001;
+syg_x = 3.94 * x * (10.^-5);
+syg_y = 3.94 * x * (10.^-4);
+
+s1 = x + y;
+del_s1 = del_x + del_y;
+s2 = x - y;
+del_s2 = del_x + del_y;
+
+syg_s1 = (x*syg_x + y*syg_y) / (x + y);
+syg_s2 = (del_x + del_y) / (x - y);
+disp('Результаты выражений x+y и x-y:')
+disp(s1)
+disp(s2)
+disp('Относительная ошибка x+y и x-y:')
+disp(del_s1)
+disp(del_s2)
+disp('Абсолютная ошибка x+y и x-y:')
+disp(syg_s1)
+disp(syg_s2)
