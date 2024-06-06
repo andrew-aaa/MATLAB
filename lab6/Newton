@@ -1,0 +1,35 @@
+disp('-------------Метод Ньютона-----------');
+eps = 0.001;
+count = 0;
+x0 = [4; 2];
+
+f0 = [x0(2).^5 - exp(x0(1)); x0(2) + (x0(1)-3).^3 - x0(1)];
+w = [-exp(x0(1)) 5*x0(2).^4;
+     3*(x0(1)-3).^2 - 1 1];
+x = x0 - inv(w)*f0;
+while ((abs(x(1) - x0(1)) > eps) || (abs(x(2) - x0(2)) > eps))
+    x0(1) = x(1);
+    x0(2) = x(2);
+    f0 = [x0(2).^5 - exp(x0(1)); x0(2) + (x0(1)-3).^3 - x0(1)];
+    w = [-exp(x0(1)) 5*x0(2).^4;
+         3*(x0(1)-3).^2 - 1 1];
+    x = x0 - inv(w)*f0;
+    count = count + 1;
+    if (count > 100)
+        break;
+    end;
+end;
+disp('Кол-во итераций');
+disp(count);
+disp('Решение СНАУ (x и y)');
+disp(x(2));
+disp(x(1));
+subs x1;
+f1 = ezplot('y.^5 - exp(x)');
+set(f1, 'Color', 'b', 'LineWidth', 2);
+hold on;
+f2 = ezplot('y + (x-3).^3 - x');
+set(f2, 'Color', 'b', 'LineWidth', 2);
+grid on;
+hold on;
+plot(x(1), x(2), '*r');
