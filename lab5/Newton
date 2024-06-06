@@ -1,0 +1,40 @@
+a = 0;
+b = 6;
+% модифицированный метод Ньютона (метод секущих)
+disp('------Метод секущих-------')
+itermax = 20;
+f = @(x)-x+5-cos(2*x);
+df = @(x)-1+2*sin(2*x);
+x0 = a;
+x1 = x0 - f(x0) / df(x0);
+count = 1;
+while (count < itermax) && (x0 ~= x1)
+    x2 = x1 - ((x1-x0)*f(x1)) / (f(x1)-f(x0));
+    count = count + 1;
+    x0=x1; 
+    x1=x2;
+end
+count=count-1;
+disp('Кол-во итераций:');
+disp(count);
+disp('Получившиеся значения x:');
+disp(x2);
+
+% метод Ньютона (метод касательных)
+disp('------Метод касательных-------')
+x0 = b;
+count = 1;
+if f(x0) * df(x0) > 0
+    while (count < itermax) && (x0 ~= x0 - f(x0) / df(x0))
+        x1 = x0 - f(x0) / df(x0);
+        count = count + 1;
+        x0 = x1;
+    end
+    count = count - 1;
+    disp('Кол-во итераций:');
+    disp(count);
+    disp('Получившиеся значения x:');
+    disp(x1);
+else
+    disp('Метод не сходится или сходится медленно');
+end
