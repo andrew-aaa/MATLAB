@@ -1,0 +1,3 @@
+function res = dydx(x, y, z)
+    res = z;
+end
