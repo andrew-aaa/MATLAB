@@ -1,0 +1,4 @@
+% -x + 5 = cos(2x)
+function f = func(x)
+    f = - x + 5 - cos(2*x);
+end
