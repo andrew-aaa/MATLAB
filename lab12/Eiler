@@ -1,0 +1,19 @@
+function [xn, yn] = Eiler(func, xs, ys, xk, h)
+    n = (xk-xs) / h;
+    hk = mod(n, 1);
+    n = int32(n - mod(n, 1));
+    xn = zeros(n+1, 1);
+    yn = zeros(n+1, 1);
+    xn(1) = xs;
+    yn(1) = ys;
+    syms x y;
+    for i=1:n
+        ys = ys + h*subs(func, {x,y}, {xs,ys});
+        xs = xs + h;
+        xn(i+1) = xs;
+        yn(i+1) = ys;
+    end
+    xs = xs - h + hk;
+    yk = ys + hk*subs(func, {x,y}, {xs,ys});
+    yk = double(yk);
+end
