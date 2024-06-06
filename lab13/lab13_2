@@ -1,0 +1,47 @@
+% Начальные условия
+y1_0 = 1;
+y2_0 = 1;
+h = 0.1;
+xkon = 3;
+n = xkon / h;
+
+% Инициализация массивов для хранения результатов
+x = zeros(1, n+1);
+y1_explicit = zeros(1, n+1);
+y2_explicit = zeros(1, n+1);
+y1_implicit = zeros(1, n+1);
+y2_implicit = zeros(1, n+1);
+
+% Установка начальных значений
+x(1) = 0;
+y1_explicit(1) = y1_0;
+y2_explicit(1) = y2_0;
+y1_implicit(1) = y1_0;
+y2_implicit(1) = y2_0;
+
+% Методом явного и неявного Эйлера
+for i = 1:n
+    g = [exp(-x(i).^2), x(i); -1, 2 ];
+    s = max(real(eig(g))) / min(real(eig(g)));
+    fprintf('На шаге n=%d равна %d\n', i, s);
+    % Явный Эйлер
+    y1_explicit(i+1) = y1_explicit(i) + h * (y1_explicit(i)*exp(x(i)^2) + x(i)*y2_explicit(i));
+    y2_explicit(i+1) = y2_explicit(i) + h * (3*x(i) - y1_explicit(i) + 2*y2_explicit(i));
+    
+    % Неявный Эйлер
+    y1_implicit(i+1) = (y1_implicit(i) + h * (y1_implicit(i+1)*exp((x(i)+h)^2) + (x(i)+h)*y2_implicit(i+1))) / (1 + h * exp((x(i)+h)^2));
+    y2_implicit(i+1) = (y2_implicit(i) + h * (3*(x(i)+h) - y1_implicit(i+1) + 2*y2_implicit(i+1))) / (1 + 2*h);
+    
+    x(i+1) = x(i) + h;
+end
+
+% Построение графика
+figure;
+plot(x, y1_explicit, 'b-', x, y2_explicit, 'r--', x, y1_implicit, 'g-.', x, y2_implicit, 'm:');
+legend('y1 (explicit)', 'y2 (explicit)', 'y1 (implicit)', 'y2 (implicit)');
+xlabel('x');
+ylabel('y');
+xlim([0 1])
+ylim([-2 10]);
+title('Решение задачи Коши методами явного и неявного Эйлера');
+grid on;
