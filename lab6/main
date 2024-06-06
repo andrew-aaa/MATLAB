@@ -1,0 +1,26 @@
+f1 = ezplot('y.^5 - exp(x)');
+set(f1, 'Color', 'b', 'LineWidth', 2);
+hold on;
+f2 = ezplot('y + (x-3).^3 - x');
+set(f2, 'Color', 'b', 'LineWidth', 2);
+grid on;
+[xr, fr, ex] = fsolve(@f, [4.0, 2.0], optimset('TolX', 1.0e-2));
+hold on;
+plot(xr(1), xr(2), '*r');
+
+disp('-------Решение с помошью функции fsolve----------');
+disp('Вектор решения');
+disp(xr);
+disp('Значения функции');
+disp(fr);
+disp('Параметр сходимости');
+disp(ex);
+disp('-------Решение с помошью функции vpasolve---------');
+syms x y;
+eqns = [y.^5 - exp(x); y + (x-3).^3 - x];
+vars = [x y];
+[solX , solY] = vpasolve(eqns, vars);
+disp(solY);
+disp(solX);
+hold on;
+plot(solX, solY, '*g');
