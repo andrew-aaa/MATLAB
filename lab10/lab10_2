@@ -1,0 +1,22 @@
+% Задание 2
+syms x;
+f = sym('a^x * exp(-x)');
+fint = int(f, x);
+disp(fint);
+
+% Задание 3
+a = 0;
+b = Inf;
+syms x;
+f = sym('(1+x)/(x+a)^(p+1)');
+q = int(f, x);
+disp(q);
+
+% Доп.задание
+a = 0;
+b = Inf;
+syms x;
+
+f = sym('1/(x^2+1)');
+q = int(f, x, [a b]);
+disp(double(q));
