@@ -1,0 +1,148 @@
+V = 650;
+k1 = 0.57;
+k2 = 0.66;
+a = -16.18; 
+b = 1.26;
+eps = 10.^-1;
+f=@(d) (k1*pi*d^2)/4 + (k2*pi^2*d^3)/(4*V);
+
+% График функции
+figure;
+dd = linspace(a, b, 100);
+Y = (k1*pi.*dd.^2)/4 + (k2*pi^2.*dd.^3)/(4*V);
+plot(dd, Y);
+xlabel('d');
+ylabel('y');
+ylim([-10 120]);
+title('График функции');
+hold off;
+
+% Метод Золотого сечения
+a_new = a;
+b_new = b;
+ksi1 = (sqrt(5)-1)/2;
+ksi2 = 1 - ksi1;
+x1 = ksi1*a_new + ksi2*b_new;
+x2 = ksi2*a_new + ksi1*b_new;
+f1 = f(x1);
+f2 = f(x2);
+k = 0;
+while 1
+    if f1 < f2
+        b_new = x2;
+        if b_new - a_new < eps
+            break;
+        else
+            x2 = x1;
+            f2 = f1;
+            x1 = ksi1*a_new + ksi2*b_new;
+            f1 = f(x1);
+        end;
+    else
+        a_new = x1;
+        if b_new - a_new < eps
+            break;
+        else
+            x1 = x2;
+            f1 = f2;
+            x2 = ksi2*a_new + ksi1*b_new;
+            f2 = f(x2);
+        end;
+    end;
+    k = k + 1;
+    root_1(k) = (a_new + b_new) / 2;
+end;
+disp('--------------Метод Золотого сечения---------------');
+disp('Точка экстремума (x, y):');
+disp(root_1(end));
+disp(f(root_1(end)));
+disp(' ');
+figure;
+plot(1:k,root_1);
+title('Метод Золотого сечения');
+ylabel('точки минимума');
+xlabel('номер итерации');
+hold off;
+
+% Метод парабол
+figure;
+h = 1e-4;
+iterm = 10;
+x0 = 15;
+for i=1:length(x0)
+    xs = x0(i);
+    iter = 1;
+    root_2(1) = xs;
+    while iter < iterm
+        xs=xs-0.5*h*((f(xs+h)-f(xs-h))/...
+                (f(xs+h)-2*f(xs)+f(xs-h)));
+        iter=iter+1;
+        root_2(iter)=xs;
+    end
+    plot(1:iter,root_2);
+    hold on;
+end
+disp('--------------Метод парабол---------------');
+disp('Точка экстремума (x, y):');
+disp(root_2(end));
+disp(f(root_2(end)));
+title('Метод парабол');
+ylabel('точки минимума');
+xlabel('номер итерации');
+disp(' ');
+hold off;
+
+% Метод Ньютона
+df = @(d) (k1*pi*d)/2 + (3*k2*pi^2*d^2)/(4*V);
+df2 = @(d) (k1*pi)/2 + (3*k2*pi^2*d)/(2*V);
+x = a;
+k = 0;
+while abs(df(x)) > eps
+    x = x - df(x) / df2(x);
+    k = k + 1;
+    root_3(k) = x;
+end;
+disp('--------------Метод Ньютона---------------');
+disp('Точка экстремума (x, y):');
+disp(root_3(end));
+disp(f(root_3(end)));
+disp(' ');
+figure;
+plot(1:k,root_3);
+title('Метод Ньютона');
+ylabel('точки минимума');
+xlabel('номер итерации');
+hold off;
+
+figure;
+plot(dd, Y, root_1(end),f(root_1(end)),'+',root_2(end),f(root_2(end)),'*',root_3(end),f(root_3(end)),'o');
+title('Найденные экстремумы');
+ylabel('y');
+xlabel('x');
+legend('график функции', 'метод Золотого сечения', 'метод парабол', 'метод Ньютона');
+ylim([-10 120]);
+hold off;
+
+% Стандартные функции MATLAB
+disp('--------------Стандартные функции MATLAB(fminbnd)---------------');
+disp('Точка экстремума (x, y):');
+x = a:0.1:b;
+y = (0.57*pi*x.^2)/4 + (0.66*pi^2*x.^3)/(4*650);
+[x, y] = fminbnd('((0.57*pi*x.^2)/4 + (0.66*pi^2*x.^3)/(4*650))', a, b);
+disp(x);
+disp(y);
+disp('Погрешность с методом Золотого сечения:');
+disp(abs(x - root_1(end)));
+disp('Погрешность с методом парабол:');
+disp(abs(x - root_2(end)));
+disp('Погрешность с методом Ньютона:');
+disp(abs(x - root_3(end)));
+disp(' ');
+figure;
+plot(dd, Y, x, y, '*');
+title('Найденный экстремум с помощью fminbnd');
+ylabel('y');
+xlabel('x');
+legend('график функции', 'fminbnd');
+ylim([-10 120]);
+hold off;
