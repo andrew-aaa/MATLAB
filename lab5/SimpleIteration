@@ -1,0 +1,27 @@
+a = 3;
+b = 6;
+eps = 0.001;
+disp('------Метод простых итераций-------');
+phi = @(x)-x+5-cos(2*x);
+phi2 = @(x)-1+2*sin(2*x);
+x0 = a;
+x = phi(x0);
+if abs(phi2(x0)) < 0.1
+    disp('Хорошая сходимость');
+    count = 1;
+    while (abs(x - x0) > eps)
+        x0 = x;
+        x = phi(x0);
+        count = count + 1;
+    end
+    disp('Кол-во итераций:');
+    disp(count);
+    disp('Получившиеся значения x:');
+    disp(x);
+elseif abs(phi2(x0)) > 0.1 && abs(phi2(x0)) < 0.5 
+    disp('Удовлетворительная сходимость');
+elseif abs(phi2(x0)) > 0.5 && abs(phi2(x0)) < 1.0 
+    disp('Плохая сходимость');
+else
+    disp('Метод не сходится');
+end;
