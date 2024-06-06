@@ -1,0 +1,51 @@
+disp('-------------Метод простых итераций-----------');
+phi1 = @(y0)log(y0.^5);
+phi2 = @(x0)-(x0-3).^3 + x0;
+
+count = 1;
+flag = 0;
+eps = 0.001;
+syms x0 y0;
+x = @(y0)log(y0.^5);
+y = @(x0)-(x0-3).^3 + x0;
+dx = diff(x, y0);
+dy = diff(y, x0);
+xs = 4;
+ys = 2;
+a = double(subs(dx, y0, ys));
+b = double(subs(dy, x0, xs));
+disp(a);
+disp(b);
+if (abs(a)+abs(b)) < 1
+    flag = 1;
+end;
+
+x = double(subs(phi1, y0, ys));
+y = double(subs(phi2, x0, xs));
+if flag == 1
+    while abs(x - xs) < eps || abs(y - ys) < eps
+        xs = x;
+        ys = y;
+        x = double(subs(phi1, y0, ys));
+        y = double(subs(phi2, x0, xs));
+        count = count + 1;
+        if count >= 100
+             break;
+        end;
+    end;
+    disp('Кол-во итераций');
+    disp(count);
+    disp('Решение СНАУ (x и y)');
+    disp(x);
+    disp(y);
+    f1 = ezplot('y.^5 - exp(x)');
+    set(f1, 'Color', 'b', 'LineWidth', 2);
+    hold on;
+    f2 = ezplot('y + (x-3).^3 - x');
+    set(f2, 'Color', 'b', 'LineWidth', 2);
+    grid on;
+    hold on;
+    plot(x, y, '*r');
+else
+    disp('Метод не сходится');
+end
