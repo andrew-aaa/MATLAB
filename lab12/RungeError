@@ -1,0 +1,5 @@
+function eps = RungeError(func, f, xs, ys, xk, h, p)
+    [x1, y1] = func(f, xs, ys, xk, h);
+    [x2, y2] = func(f, xs, ys, xk, h/2);
+    eps = abs(((y1(end))^h) - (y2(end))^(h/2)) / (2^p - 1);
+end
