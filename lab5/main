@@ -1,0 +1,55 @@
+a = 0;
+b = 6;
+% метод перебора
+disp('------Метод перебора--------');
+x = a;
+h = 1e-6;
+count = 0;
+while func(x)*func(x+h) > 0
+    x = x + h;
+    count = count + 1;
+end;
+disp('Кол-во итераций:');
+disp(count);
+disp('Получившиеся значения x:');
+disp(x);
+
+% метод половинного деления
+disp('------Метод половинного деления--------');
+a_0 = a;
+b_0 = b;
+c_0 = (a_0 + b_0) / 2;
+count = 0;
+eps = 1e-6;
+if func(a)*func(b) > 0
+    disp('Метод не сходится');
+else
+    while abs(func(c_0)) > eps
+        if (func(a_0)>0 && func(c_0)<0) || (func(a_0)<0 && func(c_0)>0)
+            b_0 = c_0; 
+        elseif (func(b_0)<0 && func(c_0)>0) || (func(b_0)<0 && func(c_0)<0)
+            a_0 = c_0;
+        end;
+        count = count + 1;
+        c_0 = (a_0 + b_0) / 2;
+        x_new = c_0;
+    end;
+    disp('Кол-во итераций:');
+    disp(count);
+    disp('Получившиеся значения x:');
+    disp(x_new);
+end;
+
+% решение с помощью функций fzero и fsolve
+disp('----------------------------------');
+disp('fzero = ');
+x_z = fzero('(- x + 5.0 - cos(2.0*x))', [1.0 6.0]);
+disp(x_z);
+disp('fsolve = ');
+x_s = fsolve('(- x + 5.0 - cos(2.0*x))', 5.0:6.0);
+disp(x_s);
+
+x_p = 2:pi/500:2*pi;
+y_p = -x_p+5;
+y_p2 = cos(2*x_p);
+plot(x_p', [y_p' y_p2'], x_z, -x_z+5, '*');
