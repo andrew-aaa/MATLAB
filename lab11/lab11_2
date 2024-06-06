@@ -1,0 +1,74 @@
+a = 1;
+b = -1;
+eps = 10.^-5;
+fun = @(x) x(1).^4 + x(2).^4 - 2*x(1).^2 + 4*x(1)*x(2) - 2*x(2).^2 + 1;
+
+% Метод градиентого спуска
+syms x y;
+func = x.^4 + y.^4 - 2*x.^2 + 4*x.*y - 2*y.^2 + 1;
+df_x = diff(func, x);  
+df_y = diff(func, y);  
+f = @(xv, yv) double(subs(subs(func, x, xv), y, yv));
+dfdx = @(xv, yv) double(subs(subs(df_x, x, xv), y, yv));
+dfdy = @(xv, yv) double(subs(subs(df_y, x, xv), y, yv));
+k = 1;
+h = 0.5;
+xy = [a, b];
+x_new(k) = xy(1);
+y_new(k) = xy(2);
+z_new(k) = f(xy(1), xy(2));
+n(k) = norm(xy);
+while sqrt(dfdx(xy(1), xy(2)) .^ 2 + dfdy(xy(1), xy(2)) .^ 2) > eps
+    while (f(xy(1) - h*(dfdx(xy(1), xy(2))), xy(2) - h*(dfdy(xy(1), xy(2)))) - f(xy(1), xy(2))) >= 0
+        h = h/2;
+    end;
+    xy(1) = xy(1) - h*(dfdx(xy(1), xy(2)));
+    xy(2) = xy(2) - h*(dfdy(xy(1), xy(2)));
+    k = k + 1;
+    x_new(k+1) = xy(1);
+    y_new(k+1) = xy(2);
+    z_new(k+1) = f(xy(1), xy(2));
+    n(k) = norm(xy);
+end;
+disp('--------------Метод градиентного спуска---------------');
+disp('Точка экстремума (z, f):');
+disp(xy);
+disp(fun(xy));
+disp(' ');
+figure;
+[a, b] = meshgrid(-5:0.5:5, -5:0.5:5);
+c = a.^4 + b.^4 - 2*a.^2 + 4*a.*b - 2*b.^2 + 1;
+surf(a, b, c);
+title('Найденный экстремум с помощью метода градиентного спуска');
+ylabel('y');
+xlabel('x');
+zlabel('z');
+hold on;
+plot3(xy(1), xy(2), fun(xy), '*');
+hold off;
+figure;
+plot(1:k, n);
+title('График сходимости к нулю нормы градиента в зависимости от номера спуска');
+ylabel('норма градиента');
+xlabel('номер спуска');
+hold off;
+
+% Стандартные функции MATLAB
+disp('--------------Стандартные функции MATLAB(fminsearch)---------------');
+[z,f,e_flag,out] = fminsearch(@(x) x(1).^4 + x(2).^4 - 2*x(1).^2 + 4*x(1)*x(2) - 2*x(2).^2 + 1, [1, -1]);
+disp('Точка экстремума (z, f):');
+disp(z);
+disp(f);
+disp('Погрешность с методом градиентного спуска:');
+disp(abs(f - fun(xy)));
+figure;
+[a, b] = meshgrid(-5:0.5:5, -5:0.5:5);
+c = a.^4 + b.^4 - 2*a.^2 + 4*a.*b - 2*b.^2 + 1;
+surf(a, b, c);
+xlabel('x');
+ylabel('y');
+zlabel('z');
+title('Найденный экстремум с помощью fminsearch');
+hold on;
+plot3(z(1), z(2), f, '*');
+hold off;
