@@ -1,0 +1,26 @@
+syms R C H O Cl;
+Ma = [R; C; H; O; Cl];
+A = [2 2 2 0 0;
+    0 0 0 0 2;
+    0 0 2 1 0;
+    2 2 3 1 1;
+    0 0 1 0 1;
+    0 0 1 1 1;
+    0 1 4 1 0;
+    2 3 5 1 1];
+disp('Ma = ');
+disp(Ma);
+disp('M = ');
+disp(A);
+r = rank(A);
+disp('rank(A) = ');
+disp(r);
+
+ for i=1:r-1
+     B = A(i:i+r-1, 1:end);
+     d = det(B);
+     if d ~= 0
+        disp(B);
+     end
+ end
+
